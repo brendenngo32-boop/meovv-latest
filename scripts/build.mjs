@@ -17,20 +17,13 @@ const videos = [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)].map(([, entry]) 
 
 if (!videos.length) throw new Error('No regular videos in the feed');
 
-const latestVideoId = videos[0].id;
-
 await mkdir('dist',{recursive:true});
 
-// Process files and inject site URL and video ID
 for (const file of ['index.html','embed.html','style.css','app.js','card.svg']) {
-   let content = await readFile(`public/${file}`,'utf8');
-   content = content.replaceAll('__SITE_URL__', base);
-   if (file === 'index.html') {
-       content = content.replaceAll('__VIDEO_ID__', latestVideoId);
-   }
-   await writeFile(`dist/${file}`, content);
+   const content = await readFile(`public/${file}`,'utf8');
+   await writeFile(`dist/${file}`, content.replaceAll('__SITE_URL__', base));
 }
 
 await writeFile('dist/latest.json', JSON.stringify({channel, checkedAt: new Date().toISOString(), videos}, null, 2));
 await writeFile('dist/.nojekyll', '');
-console.log(`Built ${videos.length} uploads. Latest: ${videos[0].title} (${latestVideoId})`);
+console.log(`Built ${videos.length} uploads. Latest: ${videos[0].title} (${videos[0].id})`);
