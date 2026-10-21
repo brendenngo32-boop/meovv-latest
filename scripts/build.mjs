@@ -41,8 +41,10 @@ for (const file of ['index.html','embed.html','style.css','app.js','card.svg']) 
            .replace(/\s*<meta name="twitter:player(?::[^"]+)?"[^>]*>/g, '')
            .replace(/\s*<meta property="og:video(?::[^"]+)?"[^>]*>/g, '')
            .replace('property="og:type" content="video.other"', 'property="og:type" content="website"')
-           .replace(`property="og:url" content="${base}/"`, `property="og:url" content="${base}/share.html"`);
-       await writeFile('dist/share.html', share);
+           .replace(`property="og:url" content="${base}/"`, `property="og:url" content="${base}/share/"`);
+       await mkdir('dist/share', {recursive:true});
+       await writeFile('dist/share/index.html', share.replace('<head>', '<head>\n    <base href="../">'));
+       await writeFile('dist/share.html', `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=${base}/share/"><link rel="canonical" href="${base}/share/"><title>MEOVV Latest Video</title></head><body><a href="${base}/share/">Open MEOVV Latest Video</a></body></html>`);
    }
 }
 
