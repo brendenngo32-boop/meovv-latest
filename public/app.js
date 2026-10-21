@@ -20,10 +20,11 @@ async function load() {
     const published = document.getElementById('published');
     if (published) published.textContent = 'LATEST UPLOAD / ' + new Date(video.published).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
     const stale = Date.now() - Date.parse(data.checkedAt) > 3*60*60*1000;
-    status.textContent = `${stale ? 'Updates may be delayed. ' : ''}Feed checked ${new Date(data.checkedAt).toLocaleString()}. Refreshes hourly. If playback is unavailable, watch on YouTube.`;
+    status.textContent = `${stale ? 'Updates may be delayed. ' : ''}Updated ${new Date(data.checkedAt).toLocaleString()} · Checked hourly`;
   } catch {
     player.textContent = 'The latest video couldn’t be loaded.';
     status.textContent = 'Please try again shortly, or visit the official channel using the YouTube link.';
   }
 }
 load();
+
