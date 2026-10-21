@@ -35,6 +35,15 @@ for (const file of ['index.html','embed.html','style.css','app.js','card.svg']) 
        content = content.replaceAll('__VIDEO_ID__', latestVideoId);
    }
    await writeFile(`dist/${file}`, content);
+   if (file === 'index.html') {
+       const share = content
+           .replace('name="twitter:card" content="player"', 'name="twitter:card" content="summary_large_image"')
+           .replace(/\s*<meta name="twitter:player(?::[^"]+)?"[^>]*>/g, '')
+           .replace(/\s*<meta property="og:video(?::[^"]+)?"[^>]*>/g, '')
+           .replace('property="og:type" content="video.other"', 'property="og:type" content="website"')
+           .replace(`property="og:url" content="${base}/"`, `property="og:url" content="${base}/share.html"`);
+       await writeFile('dist/share.html', share);
+   }
 }
 
 await writeFile('dist/latest.json', JSON.stringify({channel, checkedAt: new Date().toISOString(), videos}, null, 2));
