@@ -7,3 +7,4 @@
 .embed .embed-footer{display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;color:#bdbdbd;border-top:1px solid #454545}
 .embed-footer a{color:#fff;text-decoration:underline;text-underline-offset:3px}
 @media(max-width:480px){.embed .video-wrap{grid-template-rows:40px minmax(0,1fr) 40px}.embed .embed-heading{font-size:14px;padding:0 12px}.embed .embed-footer{font-size:12px}}
+.click-to-play-container .play-btn{border:0;color:#fff;cursor:pointer}.click-to-play-container .play-btn:focus-visible{outline:3px solid #fff;outline-offset:5px}.click-to-play-container .play-btn:disabled{cursor:wait;opacity:.6}

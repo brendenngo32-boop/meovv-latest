@@ -1,7 +1,7 @@
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
 
 const channel = 'UCowiwt93gqGlNG4k5VDxO-w';
-const base = (process.env.SITE_URL || 'https://brendenngo32.github.io/meovv-latest').replace(/\/$/, '');
+const base = (process.env.SITE_URL || 'https://meovv.lol').replace(/\/$/, '');
 
 const response = await fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${channel}`, {signal: AbortSignal.timeout(30000)});
 if (!response.ok) throw new Error(`YouTube feed returned ${response.status}; retaining previous deployment`);

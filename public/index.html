@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MEOVV Latest Video</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=5">
 
     <!-- Open Graph Meta Tags -->
     <meta property="og:type" content="video.other">
@@ -44,13 +44,13 @@
         </section>
 
         <!-- Click-to-Play Video Wrapper -->
-        <div id="video-wrapper" class="click-to-play-container player" onclick="activatePlayer()">
+        <div id="video-wrapper" class="click-to-play-container player">
             <img src="card.png" alt="Video Preview" class="preview-thumb">
-            <div class="play-btn">
+            <button type="button" class="play-btn" aria-label="Loading latest video" disabled>
                 <svg viewBox="0 0 24 24" width="48" height="48">
                     <path fill="#ffffff" d="M8 5v14l11-7z"/>
                 </svg>
-            </div>
+            </button>
         </div>
 
         <div class="details">
@@ -64,24 +64,7 @@
         <p class="status" id="status" role="status"></p>
     </main>
 
-    <script src="app.js"></script>
-    <script>
-        function activatePlayer() {
-            const wrapper = document.getElementById('video-wrapper');
-            // The build script automatically replaces __VIDEO_ID__ with your latest video ID
-            const videoId = '__VIDEO_ID__'; 
-            
-            wrapper.innerHTML = `
-                <iframe 
-                    src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
-                    title="Video player" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowfullscreen>
-                </iframe>
-            `;
-            wrapper.classList.add('is-playing');
-        }
-    </script>
+    <script src="app.js?v=5"></script>
+
 </body>
 </html>
