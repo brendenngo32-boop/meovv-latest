@@ -7,9 +7,10 @@ const xml = await response.text();
 const decode = s => s.replace(/&#x([\da-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n,16))).replace(/&#(\d+);/g, (_,n) => String.fromCodePoint(+n)).replace(/&quot;/g,'"').replace(/&apos;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
 const videos = [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)].map(([, entry]) => {
   const field = tag => entry.match(new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`))?.[1];
-  return {id:field('yt:videoId'), title:decode(field('title') || ''), published:field('published')};
-}).filter(v => /^[\w-]{11}$/.test(v.id) && Number.isFinite(Date.parse(v.published))).sort((a,b) => Date.parse(b.published)-Date.parse(a.published));
-if (!videos.length) throw new Error('No valid feed entries; retaining previous deployment');
+  const url = entry.match(/<link\b[^>]*rel="alternate"[^>]*href="([^"]+)"/)?.[1];
+  return {id:field('yt:videoId'), title:decode(field('title') || ''), published:field('published'), url};
+}).filter(v => /^[\w-]{11}$/.test(v.id) && Number.isFinite(Date.parse(v.published)) && v.url?.startsWith('https://www.youtube.com/watch?v=')).sort((a,b) => Date.parse(b.published)-Date.parse(a.published));
+if (!videos.length) throw new Error('No regular videos in the feed; retaining previous deployment rather than showing Shorts');
 await mkdir('dist',{recursive:true});
 for (const file of ['index.html','embed.html','style.css','app.js','card.svg']) {
   const content = await readFile(`public/${file}`,'utf8');
