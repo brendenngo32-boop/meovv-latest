@@ -6,16 +6,16 @@
     <title>MEOVV Latest Video</title>
     <link rel="stylesheet" href="style.css">
 
-    <!-- X (Twitter) Player Card Meta Tags for Timeline Embed Previews -->
+    <!-- X (Twitter) Player Card Meta Tags (Makes it preview like TikTok/Embedded Player) -->
     <meta name="twitter:card" content="player">
     <meta name="twitter:title" content="MEOVV's Latest Video">
-    <meta name="twitter:description" content="Watch the latest video from MEOVV.">
+    <meta name="twitter:description" content="Watch the latest release from MEOVV.">
     <meta name="twitter:image" content="__SITE_URL__/card.png">
     <meta name="twitter:player" content="__SITE_URL__/embed.html">
     <meta name="twitter:player:width" content="1280">
     <meta name="twitter:player:height" content="720">
 
-    <!-- Open Graph Meta Tags (For Discord, Slack, iMessage, Facebook) -->
+    <!-- Open Graph Meta Tags (For Discord, Slack, iMessage, etc.) -->
     <meta property="og:type" content="video.other">
     <meta property="og:title" content="MEOVV's Latest Video">
     <meta property="og:image" content="__SITE_URL__/card.png">
@@ -42,8 +42,8 @@
             <div class="channel">@MEOVV_OFFICIAL</div>
         </section>
 
-        <!-- Click-to-Play Video Wrapper for Mobile/Web View -->
-        <div id="player" class="player click-to-play-container" onclick="activatePlayer()">
+        <!-- Click-to-Play Video Wrapper -->
+        <div id="video-wrapper" class="click-to-play-container player" onclick="activatePlayer()">
             <img src="card.png" alt="Video Preview" class="preview-thumb">
             <div class="play-btn">
                 <svg viewBox="0 0 24 24" width="48" height="48">
@@ -63,14 +63,23 @@
         <p class="status" id="status"></p>
     </main>
 
-    <script src="app.js?v=3"></script>
+    <script src="app.js"></script>
     <script>
-        // Optional inline click-to-play trigger for the preview card element
         function activatePlayer() {
-            // Let your app.js handle loading the iframe properly if it's already fetching latest.json
-            if (typeof load === 'function' && !document.querySelector('#player iframe')) {
-                load();
-            }
+            const wrapper = document.getElementById('video-wrapper');
+            // The build script automatically replaces __VIDEO_ID__ with your latest video ID
+            const videoId = '__VIDEO_ID__'; 
+            
+            wrapper.innerHTML = `
+                <iframe 
+                    src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
+                    title="Video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
+            `;
+            wrapper.classList.add('is-playing');
         }
     </script>
 </body>
