@@ -1,47 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEOVV Latest Video</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MEOVV — latest upload</title><meta name="description" content="The latest upload from MEOVV’s official YouTube channel, refreshed every 30 minutes.">
+<meta name="twitter:card" content="player"><meta name="twitter:title" content="MEOVV — latest upload"><meta name="twitter:description" content="Press play for the latest from MEOVV’s official YouTube channel.">
+<meta name="twitter:image" content="__SITE_URL__/card.png?v=2"><meta name="twitter:player" content="__SITE_URL__/embed.html"><meta name="twitter:player:width" content="960"><meta name="twitter:player:height" content="636">
+<meta property="og:title" content="MEOVV — latest upload"><meta property="og:description" content="The latest video from the official MEOVV channel."><meta property="og:image" content="__SITE_URL__/card.png?v=2"><meta property="og:url" content="__SITE_URL__/"><meta property="og:type" content="website">
+<link rel="stylesheet" href="style.css?v=4"><script src="app.js?v=3" defer></script></head>
+<body><main>
+<header><a class="wordmark" href="./" aria-label="MEOVV latest home">MEOVV</a><div class="era"><strong>GO HARD</strong><span>SINGLE ALBUM · 2026</span></div></header>
+<section class="intro"><h1>MEOVV's Latest Video</h1><a class="channel" href="https://www.youtube.com/@MEOVV_OFFICIAL" target="_blank" rel="noopener">@MEOVV_OFFICIAL ↗</a></section>
+<section aria-label="Latest video"><div class="player" id="player"><p role="status">Loading the latest upload…</p></div><div class="details"><div><p class="eyebrow" id="published">LATEST UPLOAD</p><h2 id="title">MEOVV</h2></div><a class="watch" id="watch" href="https://www.youtube.com/@MEOVV_OFFICIAL" target="_blank" rel="noopener">Watch on YouTube: click here ↗</a></div><p class="status" id="status" role="status"></p></section>
+<footer><span>MEOVV / VIDEO</span><span>Unofficial fan page. All videos belong to their respective owners.</span></footer>
+</main></body></html>
 
-    <main>
-        <div class="intro">
-            <h1>Latest Release</h1>
-        </div>
 
-        <!-- Click-to-Play Video Wrapper -->
-        <div id="video-wrapper" class="click-to-play-container player" onclick="activatePlayer()">
-            <img src="card.png" alt="Video Preview" class="preview-thumb">
-            <div class="play-btn">
-                <svg viewBox="0 0 24 24" width="48" height="48">
-                    <path fill="#ffffff" d="M8 5v14l11-7z"/>
-                </svg>
-            </div>
-        </div>
-    </main>
-
-    <script>
-        function activatePlayer() {
-            const wrapper = document.getElementById('video-wrapper');
-            
-            // The build script automatically replaces __VIDEO_ID__ with the live ID
-            const videoId = '__VIDEO_ID__'; 
-            
-            wrapper.innerHTML = `
-                <iframe 
-                    src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
-                    title="Video player" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowfullscreen>
-                </iframe>
-            `;
-            wrapper.classList.add('is-playing');
-        }
-    </script>
-</body>
-</html>
