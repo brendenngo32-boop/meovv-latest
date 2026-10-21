@@ -1,6 +1,6 @@
 import { mkdir, writeFile, copyFile, readFile } from 'node:fs/promises';
 const channel = 'UCowiwt93gqGlNG4k5VDxO-w';
-const base = (process.env.SITE_URL || 'https://brendenngo32-boop.github.io/meovv-latest').replace(/\/$/, '');
+const base = (process.env.SITE_URL || 'https://meovv.lol').replace(/\/$/, '');
 const response = await fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${channel}`, {signal: AbortSignal.timeout(30000)});
 if (!response.ok) throw new Error(`YouTube feed returned ${response.status}; retaining previous deployment`);
 const xml = await response.text();
@@ -18,3 +18,4 @@ for (const file of ['index.html','embed.html','style.css','app.js','card.svg']) 
 await writeFile('dist/latest.json',JSON.stringify({channel,checkedAt:new Date().toISOString(),videos},null,2));
 await writeFile('dist/.nojekyll','');
 console.log(`Built ${videos.length} uploads. Latest: ${videos[0].title} (${videos[0].id})`);
+

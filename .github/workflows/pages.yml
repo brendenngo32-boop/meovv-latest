@@ -27,11 +27,12 @@ jobs:
         id: pages
       - run: node scripts/build.mjs
         env:
-          SITE_URL: ${{ steps.pages.outputs.base_url }}
+          SITE_URL: https://meovv.lol
       - run: cp public/card.png dist/card.png
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
       - uses: actions/deploy-pages@v4
         id: deployment
+
 
