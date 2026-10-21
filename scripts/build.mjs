@@ -36,20 +36,8 @@ for (const file of ['index.html','embed.html','style.css','app.js','card.svg']) 
    }
    await writeFile(`dist/${file}`, content);
    if (file === 'index.html') {
-       const share = content
-           .replace('name="twitter:card" content="player"', 'name="twitter:card" content="summary_large_image"')
-           .replace(/\s*<meta name="twitter:player(?::[^"]+)?"[^>]*>/g, '')
-           .replace(/\s*<meta property="og:video(?::[^"]+)?"[^>]*>/g, '')
-           .replace('property="og:type" content="video.other"', 'property="og:type" content="website"')
-           .replace(`property="og:url" content="${base}/"`, `property="og:url" content="${base}/share/"`);
+       // Preserve old links while using the same Player Card everywhere.
+       const redirect = content.replace('<head>', `<head>\n    <base href="${base}/">\n    <meta http-equiv="refresh" content="0;url=${base}/">\n    <link rel="canonical" href="${base}/">`);
        await mkdir('dist/share', {recursive:true});
-       await writeFile('dist/share/index.html', share.replace('<head>', '<head>\n    <base href="../">'));
-       // GitHub also serves share.html at /share. Include the complete card
-       // metadata for crawlers that do not follow HTML refresh redirects.
-       await writeFile('dist/share.html', share.replace('<head>', `<head>\n    <base href="${base}/">\n    <meta http-equiv="refresh" content="0;url=${base}/share/">\n    <link rel="canonical" href="${base}/share/">`));
-   }
-}
-
-await writeFile('dist/latest.json', JSON.stringify({channel, checkedAt: new Date().toISOString(), videos}, null, 2));
-await writeFile('dist/.nojekyll', '');
-console.log(`Built ${videos.length} uploads. Latest: ${videos[0].title} (${latestVideoId})`);
+       await writeFile('dist/share/index.html', redirect);
+       await writeFile('dist/share.html', redirect);
