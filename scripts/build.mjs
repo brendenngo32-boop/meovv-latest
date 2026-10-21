@@ -41,3 +41,8 @@ for (const file of ['index.html','embed.html','style.css','app.js','card.svg']) 
        await mkdir('dist/share', {recursive:true});
        await writeFile('dist/share/index.html', redirect);
        await writeFile('dist/share.html', redirect);
+   }
+}
+await writeFile('dist/latest.json', JSON.stringify({channel, checkedAt: new Date().toISOString(), videos}, null, 2));
+await writeFile('dist/.nojekyll', '');
+console.log(`Built ${videos.length} regular videos. Latest: ${videos[0].title}`);
