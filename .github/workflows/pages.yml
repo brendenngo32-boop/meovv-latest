@@ -4,7 +4,7 @@ on:
     branches: [main]
   workflow_dispatch:
   schedule:
-    - cron: '17 * * * *'
+    - cron: '17,47 * * * *'
 permissions:
   contents: read
   pages: write
@@ -34,3 +34,4 @@ jobs:
           path: dist
       - uses: actions/deploy-pages@v4
         id: deployment
+
