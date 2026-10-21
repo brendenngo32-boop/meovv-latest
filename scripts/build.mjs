@@ -18,12 +18,19 @@ const videos = [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)].map(([, entry]) 
 if (!videos.length) throw new Error('No regular videos in the feed');
 
 const latestVideoId = videos[0].id;
+let thumbnail = `https://i.ytimg.com/vi/${latestVideoId}/hqdefault.jpg`;
+try {
+   const highResolution = `https://i.ytimg.com/vi/${latestVideoId}/maxresdefault.jpg`;
+   const image = await fetch(highResolution, {method: 'HEAD', signal: AbortSignal.timeout(10000)});
+   if (image.ok && image.headers.get('content-type')?.startsWith('image/')) thumbnail = highResolution;
+} catch { /* Keep the standard YouTube thumbnail when the larger image is unavailable. */ }
 
 await mkdir('dist',{recursive:true});
 
 for (const file of ['index.html','embed.html','style.css','app.js','card.svg']) {
    let content = await readFile(`public/${file}`,'utf8');
    content = content.replaceAll('__SITE_URL__', base);
+   content = content.replaceAll('__THUMBNAIL_URL__', thumbnail);
    if (file === 'index.html') {
        content = content.replaceAll('__VIDEO_ID__', latestVideoId);
    }
