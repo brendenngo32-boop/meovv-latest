@@ -13,3 +13,5 @@ Independent fan page; not affiliated with MEOVV or THEBLACKLABEL.
 
 Shorts are excluded using the feed's canonical video links: only YouTube watch URLs are accepted. If the feed contains only Shorts, the build stops and keeps the last successful regular-video deployment.
 
+
+Feed requests retry three times. During an upstream outage, builds reuse validated regular videos from the last deployment, preserve the original checkedAt timestamp, and mark feedStatus as unavailable. The page displays an update-delay notice. If no valid fallback exists, the build still fails rather than publishing invalid data. Run node --test scripts/feed.test.mjs to verify recovery behavior.

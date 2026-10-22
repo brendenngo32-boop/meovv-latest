@@ -31,7 +31,7 @@ async function load() {
     } else {
       showVideo(video);
     }
-    const stale = Date.now() - Date.parse(data.checkedAt) > 3*60*60*1000;
+    const stale = data.feedStatus === 'unavailable' || Date.now() - Date.parse(data.checkedAt) > 3*60*60*1000;
     status.textContent = `${stale ? 'Updates may be delayed. ' : ''}Updated ${new Date(data.checkedAt).toLocaleString()} · Checked every 30 minutes`;
   } catch {
     if (player) player.textContent = 'The latest video could not be loaded.';
