@@ -30,3 +30,15 @@ function zip(files){let offset=0;const body=[],central=[];for(const f of files){
 async function runExport(all){busy=true;render();try{if(all){const files=[];for(let i=0;i<photos.length;i++){message(`Preparing ${i+1} of ${photos.length}…`);const result=await exported(photos[i]);files.push({name:String(i+1).padStart(2,'0')+'-'+result.name,data:new Uint8Array(await result.blob.arrayBuffer())})}download(zip(files),'meovv-watermarked.zip')}else{const result=await exported(photos[selected]);download(result.blob,result.name)}message('Your download is ready. Original photos are unchanged.')}catch(e){message(e.message||'Export failed. Try a smaller batch.')}finally{busy=false;render()}}
 $('download').onclick=()=>runExport(false);$('download-all').onclick=()=>runExport(true);
 (async()=>{try{const saved=JSON.parse(localStorage.getItem('meovv-marker'));if(saved){fields.forEach(k=>{if(saved.values?.[k]!==undefined)$(k).value=saved.values[k]});for(const src of saved.logos||[])logos.push({src,img:await loadImage(src)});logoIndex=Math.min(saved.logoIndex||0,Math.max(0,logos.length-1));logoThumbs();setMode(saved.mode==='logo'?'logo':'text')}}catch{}render()})();
+
+// Phone navigation keeps one tool panel within easy reach.
+function showMobilePanel(name){
+ document.querySelectorAll('.mobile-panel').forEach(panel=>panel.classList.toggle('mobile-active',panel.id==='panel-'+name));
+ document.querySelectorAll('[data-panel]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.panel===name)));
+}
+document.querySelectorAll('[data-panel]').forEach(button=>button.addEventListener('click',()=>{
+ showMobilePanel(button.dataset.panel);
+ if(matchMedia('(max-width:620px)').matches) window.scrollTo({top:0,behavior:'smooth'});
+}));
+$('upload-start').onclick=()=>$('photos').click();
+$('photos').addEventListener('change',event=>{if(event.target.files.length)showMobilePanel('mark')});
