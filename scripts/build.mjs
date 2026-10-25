@@ -1,4 +1,4 @@
-import { mkdir, writeFile, copyFile, readFile } from 'node:fs/promises';
+import { mkdir, writeFile, copyFile, readFile, cp } from 'node:fs/promises';
 const channel = 'UCowiwt93gqGlNG4k5VDxO-w';
 const base = (process.env.SITE_URL || 'https://meovv.lol').replace(/\/$/, '');
 let checkedAt = new Date().toISOString();
@@ -30,5 +30,6 @@ for (const file of ['index.html','embed.html','style.css','app.js','card.svg']) 
 }
 await writeFile('dist/latest.json',JSON.stringify({channel,checkedAt,videos},null,2));
 await writeFile('dist/.nojekyll','');
+await cp('public/watermark', 'dist/watermark', { recursive: true });
 console.log(`Built ${videos.length} uploads. Latest: ${videos[0].title} (${videos[0].id})`);
 

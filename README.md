@@ -1,5 +1,7 @@
 # MEOVV latest
 
+The browser-only watermark editor is available at `/watermark/`, linked from the homepage. Upload your own photos, add text or image logos, adjust placement, and download individual images or a ZIP. Photo processing stays on your device; remembered watermark settings and logos use browser local storage. The editor has no external dependencies.
+
 A small GitHub Pages site displaying the latest regular video (excluding Shorts) from @MEOVV_OFFICIAL. YouTube’s public Atom feed is fetched at build time; no API key or third-party feed proxy is needed.
 
 The GitHub Actions workflow runs on push, manual dispatch, and every 30 minutes at minutes 17 and 47. Scheduled runs may be delayed; GitHub can disable scheduled workflows in public repositories after 60 days of inactivity. Check the Actions tab if updates stop. A failed feed fetch leaves the previous successful deployment intact.
