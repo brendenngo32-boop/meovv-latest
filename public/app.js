@@ -14,7 +14,8 @@ async function load() {
     frame.allowFullscreen = true;
     frame.referrerPolicy = 'strict-origin-when-cross-origin';
     player.replaceChildren(frame);
-    document.getElementById('watch').href = `https://www.youtube.com/watch?v=${video.id}`;
+    const watch = document.getElementById('watch');
+    if (watch) watch.href = `https://www.youtube.com/watch?v=${video.id}`;
     const title = document.getElementById('title');
     if (title) title.textContent = video.title;
     const published = document.getElementById('published');
