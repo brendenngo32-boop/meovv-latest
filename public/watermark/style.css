@@ -34,3 +34,12 @@
 @media(max-width:620px){body{padding-bottom:env(safe-area-inset-bottom)}.mobile-panel{display:block}.mobile-panel+.mobile-panel{border-top:1px solid var(--line)}.studio aside{display:flex;flex-direction:column}#panel-photos{order:-1;border-top:0}#panel-mark{border-top:1px solid var(--line)}}
 
 @media(max-width:620px){#canvas-wrap:has(#preview[hidden]){min-height:220px;height:220px}}
+
+.preview-stage{display:flex;align-items:stretch;gap:12px;flex:1;min-width:0}
+.preview-stage #canvas-wrap{min-width:0;flex:1}
+.zoom-control{width:44px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.zoom-control button{width:40px;height:40px;border:1px solid var(--line);border-radius:8px;background:#26222e;color:var(--accent);font-size:22px}
+.zoom-control #zoom{writing-mode:vertical-lr;direction:rtl;width:32px;height:180px;margin:0;touch-action:none}
+.zoom-control output{font-size:10px;letter-spacing:0}
+#preview{transform-origin:center}
+@media(max-width:620px){.preview-stage{gap:6px;flex:none}.zoom-control{width:40px;gap:4px}.zoom-control button{height:36px;width:36px}.zoom-control #zoom{height:110px;min-height:0}.preview-stage #canvas-wrap{min-height:220px;height:220px}.preview-stage #empty h3{font-size:18px}}
