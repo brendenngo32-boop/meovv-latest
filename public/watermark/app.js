@@ -14,7 +14,23 @@ fields.forEach(id=>$(id).oninput=()=>{render();save()});$('remember').onchange=s
 function draw(target,photo){const w=photo.img.naturalWidth,h=photo.img.naturalHeight;target.width=w;target.height=h;const c=target.getContext('2d');c.drawImage(photo.img,0,0);const scale=Number($('size').value)/100;let mw=w*scale,mh=mw*.22;const logo=logos[logoIndex];if(mode==='logo'&&!logo)return;if(mode==='text'&&!$('watermark').value.trim())return;let fontSize=mw/4;if(mode==='text'){c.font=`600 ${fontSize}px ${$('font').value}`;fontSize*=mw/Math.max(1,c.measureText($('watermark').value).width);mh=fontSize*1.2}else mh=mw*logo.img.naturalHeight/logo.img.naturalWidth;if(mh>h*.8){mw*=h*.8/mh;mh=h*.8}const angle=Number($('rotation').value)*Math.PI/180;c.globalAlpha=Number($('opacity').value)/100;function mark(x,y){c.save();c.translate(x,y);c.rotate(angle);if(mode==='text'){c.font=`600 ${fontSize}px ${$('font').value}`;c.fillStyle=$('color').value;c.textAlign='center';c.textBaseline='middle';c.fillText($('watermark').value,0,0)}else c.drawImage(logo.img,-mw/2,-mh/2,mw,mh);c.restore()}if(layout==='single'){const bx=Math.min(w/2,(Math.abs(mw*Math.cos(angle))+Math.abs(mh*Math.sin(angle)))/2+w*.015),by=Math.min(h/2,(Math.abs(mw*Math.sin(angle))+Math.abs(mh*Math.cos(angle)))/2+h*.015);mark(Math.max(bx,Math.min(w-bx,pos.x*w)),Math.max(by,Math.min(h-by,pos.y*h)))}else{const stepX=Math.max(mw*1.8,w*.18),stepY=Math.max(mh*2.8,h*.15);for(let row=0,y=stepY/2;y<h+mh;y+=stepY,row++)for(let x=stepX/2-(row%2)*stepX/2;x<w+mw;x+=stepX)mark(x,y)}}
 function render(){['size','opacity','rotation'].forEach(k=>$(k+'-out').value=$(k).value+(k==='rotation'?'°':'%'));const photo=photos[selected];$('count').textContent=photos.length+' / 20';$('empty').hidden=!!photo;canvas.hidden=!photo;syncZoom(!!photo);$('remove').hidden=!photo;const valid=photo&&(mode==='text'?$('watermark').value.trim():logos.length);$('download').disabled=!valid||busy;$('download-all').disabled=!valid||busy;if(photo){draw(canvas,photo);$('filename').textContent=photo.name;$('dimensions').textContent=photo.img.naturalWidth+' × '+photo.img.naturalHeight+' PX'}else{$('filename').textContent='NO PHOTO SELECTED';$('dimensions').textContent=''}}
 function thumbs(){const box=$('thumbnails');box.replaceChildren();photos.forEach((p,i)=>{const b=document.createElement('button');b.classList.toggle('active',i===selected);b.title=p.name;b.setAttribute('aria-label','Preview '+p.name);const image=document.createElement('img');image.src=p.src;image.alt=p.name;b.append(image);b.onclick=()=>{selected=i;thumbs();render()};box.append(b)})}
-function logoThumbs(){const box=$('logo-list');box.replaceChildren();logos.forEach((l,i)=>{const b=document.createElement('button');b.classList.toggle('active',i===logoIndex);b.setAttribute('aria-label','Use logo '+(i+1));const image=document.createElement('img');image.src=l.src;image.alt='Logo '+(i+1);b.append(image);b.onclick=()=>{logoIndex=i;logoThumbs();save();render()};box.append(b)})}
+function logoThumbs(){
+ const box=$('logo-list');box.replaceChildren();
+ logos.forEach((l,i)=>{
+  const item=document.createElement('div');item.className='logo-item';
+  const b=document.createElement('button');b.classList.toggle('active',i===logoIndex);b.setAttribute('aria-label','Use logo '+(i+1));
+  const image=document.createElement('img');image.src=l.src;image.alt='Logo '+(i+1);b.append(image);
+  b.onclick=()=>{logoIndex=i;logoThumbs();save();render()};
+  const remove=document.createElement('button');remove.className='remove-logo';remove.textContent='Remove';remove.setAttribute('aria-label','Remove logo '+(i+1));
+  remove.onclick=()=>{
+   logos.splice(i,1);
+   if(i<logoIndex)logoIndex--;else if(i===logoIndex)logoIndex=Math.min(i,logos.length-1);
+   logoIndex=Math.max(0,logoIndex);logoThumbs();save();render();
+   message(logos.length?'Logo removed.':'Logo removed. Add a logo or switch to Text.');
+  };
+  item.append(b,remove);box.append(item);
+ });
+}
 async function addPhotos(files){let rejected=0;for(const f of files){if(photos.length>=20){message('The batch is limited to 20 photos.');break}if(!/^image\/(jpeg|png|webp)$/.test(f.type)){rejected++;continue}try{const src=await readFile(f),img=await loadImage(src);photos.push({src,img,name:f.name,type:f.type})}catch{rejected++}}thumbs();render();if(rejected)message(rejected+' file(s) could not be opened. Use JPG, PNG, or WebP.');$('photos').value=''}
 $('photos').onchange=e=>addPhotos(e.target.files);
 $('logos').onchange=async e=>{for(const file of e.target.files){try{const src=await readFile(file),img=await loadImage(src);logos.push({src,img});logoIndex=logos.length-1}catch{message('A logo could not be opened. Try a PNG.')}}logoThumbs();render();save();e.target.value=''};

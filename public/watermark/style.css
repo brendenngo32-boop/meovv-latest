@@ -43,3 +43,5 @@
 .zoom-control output{font-size:10px;letter-spacing:0}
 #preview{transform-origin:center}
 @media(max-width:620px){.preview-stage{gap:6px;flex:none}.zoom-control{width:40px;gap:4px}.zoom-control button{height:36px;width:36px}.zoom-control #zoom{height:110px;min-height:0}.preview-stage #canvas-wrap{min-height:220px;height:220px}.preview-stage #empty h3{font-size:18px}}
+
+.logo-item{display:flex;flex-direction:column;gap:4px;flex-shrink:0}#logo-list .remove-logo{min-height:36px;padding:6px 8px;font-size:11px;color:#e9c7dc;background:transparent;border-color:transparent}#logo-list .remove-logo:hover{background:#392b38}@media(max-width:620px){#logo-list .remove-logo{min-height:44px;font-size:12px}}
