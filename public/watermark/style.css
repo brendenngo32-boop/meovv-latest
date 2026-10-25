@@ -8,7 +8,7 @@
  .workspace{position:sticky;top:0;z-index:2;border:1px solid var(--line);border-radius:12px;padding:12px;background:#18171c}
  #canvas-wrap{min-height:160px;height:clamp(160px,28svh,280px);max-height:none;flex:none;padding:10px 0}
  canvas{max-height:100%;max-width:100%;width:auto;height:auto;object-fit:contain}
- #empty .cat,#empty p{display:none}#empty h3{font-size:21px;margin:10px 0 14px}
+ #empty p{display:none}#empty .cat{display:block;font-size:22px;line-height:1.1;margin:0 0 8px}#empty h3{font-size:21px;margin:10px 0 14px}
  .mobile-upload{display:block;min-height:48px}#try-demo{margin:0;min-height:44px;font-size:12px}
  .preview-top{font-size:9px;letter-spacing:.4px}.preview-bottom{padding:4px 0 0;min-height:44px}
  #remove{min-height:44px;flex-shrink:0;font-size:12px}#thumbnails:empty{display:none}#thumbnails{padding:8px 0 0}#thumbnails img{width:44px;height:44px}
