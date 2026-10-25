@@ -11,9 +11,9 @@ document.querySelectorAll('[data-layout]').forEach(b=>b.onclick=()=>{layout=b.da
 const names=['Top left','Top center','Top right','Middle left','Center','Middle right','Bottom left','Bottom center','Bottom right'];
 names.forEach((name,i)=>{const b=document.createElement('button');b.textContent='·';b.title=name;b.setAttribute('aria-label',name);b.onclick=()=>{pos={x:[.15,.5,.85][i%3],y:[.12,.5,.88][Math.floor(i/3)]};document.querySelectorAll('#positions button').forEach(v=>v.classList.toggle('active',v===b));render()};if(i===8)b.classList.add('active');$('positions').append(b)});
 fields.forEach(id=>$(id).oninput=()=>{render();save()});$('remember').onchange=save;
-function draw(target,photo){const w=photo.img.videoWidth||photo.img.naturalWidth,h=photo.img.videoHeight||photo.img.naturalHeight;target.width=w;target.height=h;const c=target.getContext('2d');c.drawImage(photo.img,0,0);const scale=Number($('size').value)/100;let mw=w*scale,mh=mw*.22;const logo=logos[logoIndex];if(mode==='logo'&&!logo)return;if(mode==='text'&&!$('watermark').value.trim())return;let fontSize=mw/4;if(mode==='text'){c.font=`600 ${fontSize}px ${$('font').value}`;fontSize*=mw/Math.max(1,c.measureText($('watermark').value).width);mh=fontSize*1.2}else mh=mw*logo.img.naturalHeight/logo.img.naturalWidth;if(mh>h*.8){mw*=h*.8/mh;mh=h*.8}const angle=Number($('rotation').value)*Math.PI/180;c.globalAlpha=Number($('opacity').value)/100;function mark(x,y){c.save();c.translate(x,y);c.rotate(angle);if(mode==='text'){c.font=`600 ${fontSize}px ${$('font').value}`;c.fillStyle=$('color').value;c.textAlign='center';c.textBaseline='middle';c.fillText($('watermark').value,0,0)}else c.drawImage(logo.img,-mw/2,-mh/2,mw,mh);c.restore()}if(layout==='single'){const bx=Math.min(w/2,(Math.abs(mw*Math.cos(angle))+Math.abs(mh*Math.sin(angle)))/2+w*.015),by=Math.min(h/2,(Math.abs(mw*Math.sin(angle))+Math.abs(mh*Math.cos(angle)))/2+h*.015);mark(Math.max(bx,Math.min(w-bx,pos.x*w)),Math.max(by,Math.min(h-by,pos.y*h)))}else{const stepX=Math.max(mw*1.8,w*.18),stepY=Math.max(mh*2.8,h*.15);for(let row=0,y=stepY/2;y<h+mh;y+=stepY,row++)for(let x=stepX/2-(row%2)*stepX/2;x<w+mw;x+=stepX)mark(x,y)}}
+function draw(target,photo){const w=photo.img.videoWidth||photo.img.naturalWidth,h=photo.img.videoHeight||photo.img.naturalHeight;target.width=w;target.height=h;const c=target.getContext('2d');if(photo.video&&photo.img.readyState<2){c.fillStyle='#211d29';c.fillRect(0,0,w,h);c.fillStyle='#d8c7f4';c.font=Math.max(18,w/30)+'px sans-serif';c.textAlign='center';c.fillText('Tap Play to preview your video',w/2,h/2);return}c.drawImage(photo.img,0,0);const scale=Number($('size').value)/100;let mw=w*scale,mh=mw*.22;const logo=logos[logoIndex];if(mode==='logo'&&!logo)return;if(mode==='text'&&!$('watermark').value.trim())return;let fontSize=mw/4;if(mode==='text'){c.font=`600 ${fontSize}px ${$('font').value}`;fontSize*=mw/Math.max(1,c.measureText($('watermark').value).width);mh=fontSize*1.2}else mh=mw*logo.img.naturalHeight/logo.img.naturalWidth;if(mh>h*.8){mw*=h*.8/mh;mh=h*.8}const angle=Number($('rotation').value)*Math.PI/180;c.globalAlpha=Number($('opacity').value)/100;function mark(x,y){c.save();c.translate(x,y);c.rotate(angle);if(mode==='text'){c.font=`600 ${fontSize}px ${$('font').value}`;c.fillStyle=$('color').value;c.textAlign='center';c.textBaseline='middle';c.fillText($('watermark').value,0,0)}else c.drawImage(logo.img,-mw/2,-mh/2,mw,mh);c.restore()}if(layout==='single'){const bx=Math.min(w/2,(Math.abs(mw*Math.cos(angle))+Math.abs(mh*Math.sin(angle)))/2+w*.015),by=Math.min(h/2,(Math.abs(mw*Math.sin(angle))+Math.abs(mh*Math.cos(angle)))/2+h*.015);mark(Math.max(bx,Math.min(w-bx,pos.x*w)),Math.max(by,Math.min(h-by,pos.y*h)))}else{const stepX=Math.max(mw*1.8,w*.18),stepY=Math.max(mh*2.8,h*.15);for(let row=0,y=stepY/2;y<h+mh;y+=stepY,row++)for(let x=stepX/2-(row%2)*stepX/2;x<w+mw;x+=stepX)mark(x,y)}}
 function render(){['size','opacity','rotation'].forEach(k=>$(k+'-out').value=$(k).value+(k==='rotation'?'°':'%'));const photo=photos[selected];$('count').textContent=photos.length+' / 20';$('empty').hidden=!!photo;canvas.hidden=!photo;syncZoom(!!photo);$('remove').hidden=!photo;updateVideoControls(photo);const valid=photo&&(mode==='text'?$('watermark').value.trim():logos.length);$('download').disabled=!valid||busy;$('download-all').disabled=!valid||busy;if(photo){draw(canvas,photo);$('filename').textContent=photo.name;$('dimensions').textContent=(photo.img.videoWidth||photo.img.naturalWidth)+' × '+(photo.img.videoHeight||photo.img.naturalHeight)+' PX'}else{$('filename').textContent='NO FILE SELECTED';$('dimensions').textContent=''}}
-function thumbs(){const box=$('thumbnails');box.replaceChildren();photos.forEach((p,i)=>{const b=document.createElement('button');b.classList.toggle('active',i===selected);b.title=p.name;b.setAttribute('aria-label','Preview '+p.name);const image=document.createElement('img');image.src=p.poster||p.src;image.alt=p.name;b.append(image);b.onclick=()=>{photos[selected]?.img.pause?.();selected=i;thumbs();render()};box.append(b)})}
+function thumbs(){const box=$('thumbnails');box.replaceChildren();photos.forEach((p,i)=>{const b=document.createElement('button');b.classList.toggle('active',i===selected);b.title=p.name;b.setAttribute('aria-label','Preview '+p.name);const image=document.createElement('img');image.src=p.poster||(p.video?'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="90"><rect width="120" height="90" fill="%23282035"/><text x="44" y="56" fill="white" font-size="32">▶</text></svg>'):p.src);image.alt=p.name;b.append(image);b.onclick=()=>{photos[selected]?.img.pause?.();selected=i;thumbs();render()};box.append(b)})}
 function logoThumbs(){
  const box=$('logo-list');box.replaceChildren();
  logos.forEach((l,i)=>{
@@ -31,7 +31,22 @@ function logoThumbs(){
   item.append(b,remove);box.append(item);
  });
 }
-async function addPhotos(files){if(busy)return;let rejected=0;for(const f of files){if(photos.length>=20){message('The batch is limited to 20 files.');break}if(f.type.startsWith('video/')){try{photos.push(await loadVideo(f))}catch(e){message(e.message);rejected++}continue}if(!/^image\/(jpeg|png|webp)$/.test(f.type)){rejected++;continue}try{const src=await readFile(f),img=await loadImage(src);photos.push({src,img,name:f.name,type:f.type})}catch{rejected++}}thumbs();render();if(rejected)message(rejected+' file(s) could not be opened. Use images or a video format your browser can play.');$('photos').value=''}
+async function addPhotos(files){
+ if(busy)return;const incoming=Array.from(files),errors=[];let added=0;
+ message('Opening selected files…');
+ for(const f of incoming){
+  if(photos.length>=20){errors.push('The batch is limited to 20 files.');break}
+  try{
+   let item;
+   if(f.type.startsWith('video/')||/\.(mp4|mov|m4v|webm|ogv|3gp)$/i.test(f.name))item=await loadVideo(f);
+   else if(/^image\/(jpeg|png|webp)$/.test(f.type)){const src=await readFile(f),img=await loadImage(src);item={src,img,name:f.name,type:f.type}}
+   else throw Error('Unsupported file type. Choose an image or video.');
+   photos[selected]?.img.pause?.();photos.push(item);selected=photos.length-1;added++;thumbs();render();
+  }catch(e){errors.push(f.name+': '+(e.message||'Could not open this file.'))}
+ }
+ message(errors.length?errors.join(' '):added?'File ready. '+(photos[selected]?.video?'Tap Play to preview your video.':''):'No files added.');
+ $('photos').value='';
+}
 $('photos').onchange=e=>addPhotos(e.target.files);
 $('logos').onchange=async e=>{for(const file of e.target.files){try{const src=await readFile(file),img=await loadImage(src);logos.push({src,img});logoIndex=logos.length-1}catch{message('A logo could not be opened. Try a PNG.')}}logoThumbs();render();save();e.target.value=''};
 const drop=$('photo-drop');['dragenter','dragover'].forEach(name=>drop.addEventListener(name,e=>{e.preventDefault();drop.classList.add('over')}));drop.ondragleave=()=>drop.classList.remove('over');drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over');addPhotos(e.dataTransfer.files)};
@@ -69,15 +84,29 @@ function updateVideoControls(p){
 function clockTime(t){return Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0')}
 function lockEditor(lock){document.querySelectorAll('aside input,aside select,aside button,#thumbnails button,#remove,#video-controls button,#video-controls input').forEach(el=>el.disabled=lock);canvas.style.pointerEvents=lock?'none':'';$('cancel-export').hidden=!lock}
 async function loadVideo(file){
- const src=URL.createObjectURL(file),v=document.createElement('video');v.playsInline=true;v.preload='auto';v.src=src;v.className='video-source';document.body.append(v);
- try{await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('Video loading timed out.')),20000);v.onloadeddata=()=>{clearTimeout(timer);resolve()};v.onerror=()=>{clearTimeout(timer);reject(Error('This video format cannot be played in this browser.'))}});
- if(!Number.isFinite(v.duration)||!v.videoWidth)throw Error('This video has no playable video track.');
- const thumb=document.createElement('canvas');thumb.width=120;thumb.height=90;thumb.getContext('2d').drawImage(v,0,0,120,90);
- const p={src,img:v,video:true,name:file.name,type:file.type,poster:thumb.toDataURL()};
- v.addEventListener('seeked',()=>{if(photos[selected]===p&&!busy){draw(canvas,p);updateVideoControls(p)}});
- v.addEventListener('ended',()=>updateVideoControls(photos[selected]));
- v.addEventListener('play',()=>{function frame(){if(photos[selected]!==p||v.paused||v.ended)return;if(!busy){draw(canvas,p);updateVideoControls(p)}requestAnimationFrame(frame)}frame()});return p;
- }catch(e){v.remove();URL.revokeObjectURL(src);throw e}
+ const src=URL.createObjectURL(file),v=document.createElement('video');
+ v.playsInline=true;v.setAttribute('playsinline','');v.preload='auto';v.className='video-source';document.body.append(v);
+ try{
+  await new Promise((resolve,reject)=>{
+   const cleanup=()=>{clearTimeout(timer);v.removeEventListener('loadedmetadata',ready);v.removeEventListener('error',failed)};
+   const ready=()=>{cleanup();resolve()};
+   const failed=()=>{cleanup();reject(Error('This video cannot be decoded by your browser. Try an H.264 MP4.'))};
+   const timer=setTimeout(()=>{cleanup();reject(Error('Video loading timed out. Download the clip to your device and select it again.'))},60000);
+   v.addEventListener('loadedmetadata',ready);v.addEventListener('error',failed);
+   v.src=src;v.load();
+  });
+  if(!Number.isFinite(v.duration)||!v.videoWidth)throw Error('This video has no playable video track.');
+  const p={src,img:v,video:true,name:file.name,type:file.type,poster:''};
+  function refresh(){
+   if(v.readyState>=2){try{const thumb=document.createElement('canvas');thumb.width=120;thumb.height=90;thumb.getContext('2d').drawImage(v,0,0,120,90);p.poster=thumb.toDataURL();if(photos.includes(p))thumbs()}catch{}}
+   if(photos[selected]===p&&!busy){draw(canvas,p);updateVideoControls(p)}
+  }
+  v.addEventListener('loadeddata',refresh);v.addEventListener('seeked',refresh);
+  v.addEventListener('error',()=>message('Video playback failed. Try an H.264 MP4.'));
+  v.addEventListener('ended',()=>updateVideoControls(photos[selected]));
+  v.addEventListener('play',()=>{function frame(){if(photos[selected]!==p||v.paused||v.ended)return;if(!busy){draw(canvas,p);updateVideoControls(p)}requestAnimationFrame(frame)}frame()});
+  refresh();return p;
+ }catch(e){v.pause();v.removeAttribute('src');v.load();v.remove();URL.revokeObjectURL(src);throw e}
 }
 $('video-play').onclick=async()=>{const p=photos[selected];if(!p?.video||busy)return;try{if(p.img.paused)await p.img.play();else p.img.pause();updateVideoControls(p)}catch{message('Playback could not start. Try another video.')}};
 $('video-seek').oninput=()=>{const p=photos[selected];if(p?.video&&!busy)p.img.currentTime=Number($('video-seek').value)/100*p.img.duration};
